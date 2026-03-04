@@ -43,7 +43,7 @@ public class DataInitializer implements CommandLineRunner {
             ));
             System.out.println("Default classes created successfully!");
         } else {
-            System.out.println("✅ Classes already exist.");
+            System.out.println("Classes already exist.");
         }
     }
 

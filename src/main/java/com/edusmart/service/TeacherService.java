@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,7 @@ public class TeacherService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public List<User> getAllTeachers() {
         return userRepository.findByRole(User.Role.TEACHER);
@@ -23,9 +25,19 @@ public class TeacherService {
         if (userRepository.existsByEmail(teacher.getEmail())) {
             throw new RuntimeException("Email already exists.");
         }
+
+        String rawPassword = generatePassword();
+
         teacher.setRole(User.Role.TEACHER);
-        teacher.setPassword(passwordEncoder.encode(teacher.getPassword()));
-        return userRepository.save(teacher);
+        teacher.setPassword(passwordEncoder.encode(rawPassword));
+        User saved = userRepository.save(teacher);
+
+        String fullName = teacher.getFirstName() + " " + teacher.getLastName();
+        emailService.sendWelcomeEmail(teacher.getEmail(), fullName, rawPassword, "Teacher");
+
+        System.out.println("✅ Teacher account created and email sent to: " + teacher.getEmail());
+
+        return saved;
     }
 
     public User updateTeacher(String id, User updated) {
@@ -39,5 +51,9 @@ public class TeacherService {
 
     public void deleteTeacher(String id) {
         userRepository.deleteById(id);
+    }
+
+    private String generatePassword() {
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }
