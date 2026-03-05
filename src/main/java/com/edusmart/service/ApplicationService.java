@@ -61,10 +61,14 @@ public class ApplicationService {
             student.setDepartment(application.getDepartment());
             userRepository.save(student);
 
-            String fullName = application.getFirstNameFr() + " " + application.getLastNameFr();
-            emailService.sendWelcomeEmail(application.getEmail(), fullName, rawPassword, "Student");
-
-            System.out.println("Student account created and email sent to: " + application.getEmail());
+            try {
+                String fullName = application.getFirstNameFr() + " " + application.getLastNameFr();
+                emailService.sendWelcomeEmail(application.getEmail(), fullName, rawPassword, "Student");
+                System.out.println("Email sent to: " + application.getEmail());
+            } catch (Exception e) {
+                System.err.println(" Failed to send email: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
 
         return application;
@@ -85,7 +89,20 @@ public class ApplicationService {
     }
 
     public void deleteApplication(String id) {
+        Optional<Application> optional = applicationRepository.findById(id);
+        if (optional.isEmpty()) {
+            throw new RuntimeException("Application not found.");
+        }
+        Application application = optional.get();
+
+        // Delete associated user account if exists
+        if (userRepository.existsByEmail(application.getEmail())) {
+            userRepository.deleteByEmail(application.getEmail());
+            System.out.println("✅ User account deleted for: " + application.getEmail());
+        }
+
         applicationRepository.deleteById(id);
+        System.out.println("✅ Application deleted: " + id);
     }
 
     private String generatePassword() {
