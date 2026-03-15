@@ -5,6 +5,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Document(collection = "users")
 public class User {
@@ -19,6 +22,8 @@ public class User {
     private Role role;
     private String department;
     private String subjects;
+    private String className;
+    private List<String> assignedClasses = new ArrayList<>();
 
     public enum Role {
         ADMIN, TEACHER, STUDENT

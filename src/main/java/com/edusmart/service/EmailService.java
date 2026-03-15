@@ -22,7 +22,7 @@ public class EmailService {
                         "Email: " + toEmail + "\n" +
                         "Password: " + password + "\n" +
                         "Role: " + role + "\n\n" +
-                        "Please log in at: http://localhost:4200/login\n\n" +
+
                         "Best regards,\n" +
                         "EduSmart Team"
         );

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtil {
@@ -22,7 +23,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email, String role, String firstName, String lastName, String department, String subjects) {
+    public String generateToken(String email, String role, String firstName,
+                                String lastName, String department,
+                                Object subjects, String className,
+                                List<String> assignedClasses) {
         return Jwts.builder()
                 .subject(email)
                 .claim("role", role)
@@ -30,6 +34,8 @@ public class JwtUtil {
                 .claim("lastName", lastName)
                 .claim("department", department)
                 .claim("subjects", subjects)
+                .claim("className", className)
+                .claim("assignedClasses", assignedClasses)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())

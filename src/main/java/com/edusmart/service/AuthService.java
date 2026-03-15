@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -37,7 +38,9 @@ public class AuthService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getDepartment() != null ? user.getDepartment() : "",
-                user.getSubjects() != null ? user.getSubjects() : ""
+                user.getSubjects() != null ? user.getSubjects() : "",
+                user.getClassName() != null ? user.getClassName() : "",
+                user.getAssignedClasses() != null ? user.getAssignedClasses() : new ArrayList<>()
         );
     }
 
